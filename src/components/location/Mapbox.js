@@ -1,47 +1,22 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   AddressAutofill,
   AddressMinimap,
   useConfirmAddress,
   config,
 } from "@mapbox/search-js-react";
-import mapboxgl from "mapbox-gl";
-import "./App.css";
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiYW50aG9ueW5idWk5OSIsImEiOiJjbG51cnUxdGYwZjQ5Mm1xaXI5NWpldDZqIn0.CjJYTJGsG_ixUzaGNuv8ug";
 
-function App() {
+function Mapbox() {
   const [showFormExpanded, setShowFormExpanded] = useState(false);
   const [showMinimap, setShowMinimap] = useState(false);
   const [feature, setFeature] = useState();
   const [showValidationText, setShowValidationText] = useState(false);
   const [token, setToken] = useState("");
 
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
-  const [zoom, setZoom] = useState(9);
-
   useEffect(() => {
-    const accessToken =
-      "pk.eyJ1IjoiYW50aG9ueW5idWk5OSIsImEiOiJjbG51cnUxdGYwZjQ5Mm1xaXI5NWpldDZqIn0.CjJYTJGsG_ixUzaGNuv8ug";
+    const accessToken = "pk.eyJ1IjoiYW50aG9ueW5idWk5OSIsImEiOiJjbG51cnUxdGYwZjQ5Mm1xaXI5NWpldDZqIn0.CjJYTJGsG_ixUzaGNuv8ug";
     setToken(accessToken);
     config.accessToken = accessToken;
-
-    if (map.current) return; // initialize map only once
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [lng, lat],
-      zoom: zoom,
-    });
-
-    map.current.on("move", () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
-    });
   }, []);
 
   const { formRef, showConfirm } = useConfirmAddress({
@@ -91,14 +66,6 @@ function App() {
 
   return (
     <>
-      <div className="sidebar">
-        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-      </div>
-      <div
-        ref={mapContainer}
-        className="map-container"
-        style={{ height: "600px" }}
-      />
       <form ref={formRef} className="flex flex--column" onSubmit={handleSubmit}>
         <div className="grid grid--gut24 mb60">
           <div className="col col--auto-mm w-full">
@@ -195,12 +162,8 @@ function App() {
           Order successfully submitted.
         </div>
       )}
-      <div
-        id="map"
-        style={{ position: "absolute", width: "100%", height: "100%" }}
-      ></div>
     </>
   );
 }
 
-export default App;
+export default Mapbox;
